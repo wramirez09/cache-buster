@@ -2,6 +2,14 @@ var casper = require('casper').create();
 var initpage = process.env.URL
 require('dotenv').config()
 
+var config = {
+    selectors : {
+        username : "input[name = any_usernameIdentifier ]",
+        userpassword: 'input[name = any_passwordIdentifier ]',
+        "clearAllButton": "j_id_a:clearAll"
+    }
+}
+
 casper.start(initpage);
 
 casper.then(function() {
@@ -9,11 +17,11 @@ casper.then(function() {
 });
 // initial log in. 
 casper.then(function() {
-    this.waitForSelector("form input[name='j_username']", function() {
+    this.waitForSelector(config.selectors.username, function() {
 
         this.fillSelectors('form', {
-            'input[name = j_username ]': process.env.EPB_USER,
-            'input[name = j_password ]': process.env.EP_PASS
+            config.selectors.username: process.env.EPB_USER,
+            config.selectors.userpassword: process.env.EP_PASS
         }, true);
 
     });
@@ -38,11 +46,11 @@ casper.then(function() {
 
             this.wait(500, function() {
 
-                this.waitForSelector("form input[name='j_username']", function() {
+                this.waitForSelector(config.selectors.username, function() {
 
                     this.fillSelectors('form', {
-                        'input[name = j_username ]': process.env.EPB_USER,
-                        'input[name = j_password ]': process.env.EP_PASS
+                        config.selectors.username: process.env.EPB_USER,
+                        config.selectors.userpassword: process.env.EP_PASS
                     }, true);
                 });
                 casper.then(function() {
@@ -51,7 +59,7 @@ casper.then(function() {
                 });
                 casper.then(function() {
                     var button = this.evaluate(function() {
-                        var btn = document.getElementById("j_id_a:clearAll");
+                        var btn = document.getElementById(config.selectors.clearAllButton);
                         btn.click();
                     });
                 });
